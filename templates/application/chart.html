@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Sensor Data Chart</title>
+
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+  <!-- jQuery library -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+  <!-- Latest compiled JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
+  <div class="container">
+    {% if sensor %}
+    <div class="card-body">
+      <canvas id="chart"></canvas>
+    </div>
+    {% else %}
+    <div class="card-body">
+      <h1>No sensor avaliable, go to panel a make a new one </h1>
+    </div>
+    {% endif %}
+
+  </div>
+
+  <script>
+    let name = '{{ name | safe}}';
+    let yaxis = {{ values | safe }};
+    let xaxis = {{ times | safe }};
+    let ctx = document.getElementById('chart').getContext('2d');
+    let config = {
+      // chart type
+      type: 'line',
+
+      // dataset's data
+      data: {
+        labels: xaxis, // X axe
+        datasets: [{
+          label: "Temperatura",
+          backgroundColor: 'rgb(173, 216, 230)',
+          borderColor: 'rgb(55, 99, 132)',
+          data: yaxis, // Y axe
+        }]
+      },
+      // Configuration options goes here
+      options: {
+        responsive: true,
+        legend: {
+          position: "top",
+        },
+        title: {
+          display: true,
+          text: name.concat(" DataChart").toUpperCase()
+        },
+        scales: {
+          xAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: "Muestras"
+            }
+          }],
+          yAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: "Valores"
+            }
+          }]
+
+        }
+
+      }
+
+    }
+
+    window.onload = function () {
+      window.myChart = new Chart(ctx, config);
+    };
+
+    setInterval(function () {
+      location.reload();
+    }, 6000);
+
+  </script>
+</body>
+
+</html>
